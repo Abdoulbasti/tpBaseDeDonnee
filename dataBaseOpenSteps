@@ -1,0 +1,18 @@
+ssh mukailaa@nivose.informatique.univ-paris-diderot.fr : 
+
+
+psql -d base_cours mukailaa : 
+
+SET search_path TO projet_login; -> changer le mot de passe 
+
+ALTER USER login WITH PASS WORD 'nouveauMotDePasse'; -> pour changer de mot de passe 
+
+SHOW search_path; -> connaitre le shema courant 
+
+\i /ens/zielonka/BD/TP1.1.sql
+
+\d nom_table : verfier l'existance d'une table
+
+\dt -> pour afficher tous les tables de bdd.
+
+\cd cherminRepertoire -> Changer de repertoire
