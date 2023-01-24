@@ -2,10 +2,10 @@
 \d
 
 --2 
-\d magasin
-\d produit
-\d provenance
-\d usine
+SELECT * FROM provenance ;
+SELECT * FROM produit;
+SELECT * FROM usine;
+SELECT * FROM magasin;
 
 --3 Les villes ou il y'a une usine
 SELECT DISTINCT ville
@@ -16,9 +16,9 @@ SELECT nom_prod, couleurs
 FROM produit;
 
 --5 la référence et la quantité de chaque produit livré au magasin avec la référence 14 
-SELECT produit.ref_prod, produit.poids 
-FROM produit, magasin 
-WHERE magasin.ref_mag = 14;
+SELECT ref_prod, quantite 
+FROM provenance
+WHERE ref_mag = 14;
 
 --6 la référence, le nom et la ville de toutes les usines de Marseille ;
 SELECT *
@@ -39,7 +39,7 @@ WHERE couleur = 'rouge';
 /*SELECT DISTINCT nom_mag
 FROM magasin 
 WHERE LEFT(ville, 1) = 'L'; */
-SELECT nom_mag FROM magasin WHERE substring(ville FROM 0 FOR 1) = 'L';
+SELECT nom_mag FROM magasin WHERE LEFT(ville, 1) = 'L';
 
 --10
 SELECT ref_prod, nom_prod FROM produit WHERE LEFT(nom_prod, 5) = 'casse';
@@ -55,33 +55,41 @@ SELECT nom_prod, couleur FROM produit WHERE poids>=15 AND poids<=45;
 SELECT nom_prod FROM produit WHERE (couleur='jaune' OR couleur='bleu') AND poids<20;
 
 --14
-SELECT nom_prod FROM produit
+SELECT nom_prod FROM produit WHERE (couleur='jaune' OR couleur='bleu') AND poids<20;
+
+(SELECT nom_prod FROM produit WHERE couleur='jaune')
+UNION 
+(SELECT nom_prod FROM produit WHERE (couleur='bleu' AND poids<20));    
+
+--La version qui marche comme attendu
+SELECT nom_prod FROM produit WHERE couleur='jaune' OR couleur='bleu' AND poids<20;
 
 --15
-SELECT nom_prod
+SELECT nom_prod FROM produit WHERE poids>30 
+UNION ALL -- et
+SELECT nom_prod FROM produit WHERE LEFT(nom_prod, 5)='lampe';
 
 --16
-SELECT ref_mag FROM magasin WHERE nom_mag IS NULL;
---Pour faire avec non null 
-SELECT ref_mag FROM magasin WHERE nom_mag IS NOT NULL;
+SELECT ref_mag FROM magasin WHERE nom_mag = 'NULL'; ok
 
---17
---SELECT ref_mag FROM magasin WHERE (EXISTS nom_mag);
-SELECT ref_mag FROM magasin WHERE ;
+--17 ??
+SELECT ref_mag FROM magasin WHERE nom_mag ='';  ??
+SELECT ref_mag FROM magasin WHERE nom_mag IS NULL; ?? ok
 
---18 
---SELECT ref_prod FROM produit, usine WHERE usine.nom_usine ='martin' AND usine.ville='Nantes';
-SELECT ref_prod FROM produit;
-SELECT nom_usine FROM usine WHERE ='martin' AND usine.ville='Nantes';
+--18 ???
+SELECT ref_prod FROM produit, usine WHERE nom_usine='martin' AND usine.ville='Nantes';
+
 
 --19
-SELECT nom_usine FROM usine
+SELECT nom_usine FROM usine, magasin WHERE usine.ville=magasin.ville;
+
 
 --20
-SELECT ref_prod, quantite, nom_mag FROM provenance, magasin WHERE LEFT(nom_mag, 1)='P';
+SELECT ref_prod, quantite FROM provenance, magasin WHERE LEFT(nom_mag, 1)='P';
 
---21    
-SELECT nom_usine, nom_prod FROM usine, produit WHERE nom_prod = 'ordinateur';
+--21
+SELECT nom_usine FROM usine, produit WHERE nom_prod = 'ordinateur';
+
 
 --22
 SELECT nom_prod, poids, ref_prod FROM produit 
