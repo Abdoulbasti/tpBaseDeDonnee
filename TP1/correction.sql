@@ -72,25 +72,50 @@ SELECT nom_prod FROM produit WHERE LEFT(nom_prod, 5)='lampe';
 --16
 SELECT ref_mag FROM magasin WHERE nom_mag = 'NULL'; ok
 
---17 ??
-SELECT ref_mag FROM magasin WHERE nom_mag ='';  ??
-SELECT ref_mag FROM magasin WHERE nom_mag IS NULL; ?? ok
+--17
+SELECT ref_mag FROM magasin WHERE nom_mag ='';
 
---18 ???
-SELECT ref_prod FROM produit, usine WHERE nom_usine='martin' AND usine.ville='Nantes';
+--18
+SELECT DISTINCT ref_prod FROM provenance 
+WHERE ref_usine
+ IN (SELECT ref_usine FROM usine WHERE nom_usine = 'martin' and ville = 'Nantes');
 
+SELECT DISTINCT ref_prod 
+    FROM provenance, usine 
+    WHERE nom_usine = 'martin' and ville = 'Nantes' and provenance.ref_usine = usine.ref_usine;
 
 --19
 SELECT nom_usine FROM usine, magasin WHERE usine.ville=magasin.ville;
 
 
 --20
-SELECT ref_prod, quantite FROM provenance, magasin WHERE LEFT(nom_mag, 1)='P';
+--SELECT ref_prod, quantite FROM provenance, magasin WHERE LEFT(nom_mag, 1)='P';
+SELECT ref_prod, quantite FROM provenance, magasin 
+WHERE LEFT(nom_mag, 1) = 'P' AND provenance.ref_mag=magasin.ref_mag;
+
+SELECT ref_prod, quantite 
+FROM provenance JOIN magasin ON 
+(LEFT(nom_mag, 1) = 'P' AND provenance.ref_mag=magasin.ref_mag);
 
 --21
-SELECT nom_usine FROM usine, produit WHERE nom_prod = 'ordinateur';
+--SELECT nom_usine FROM usine, produit WHERE nom_prod = 'ordinateur';
+SELECT nom_usine FROM usine, produit, provenance 
+WHERE 
+    usine.ref_usine=provenance.ref_usine AND 
+    produit.ref_prod=provenance.ref_prod AND 
+    nom_prod='ordinateur';
 
+SELECT nom_usine
+FROM 
+provenance 
+JOIN 
+produit ON (produit.ref_prod=provenance.ref_prod AND nom_prod='ordinateur')
+JOIN 
+usine ON (usine.ref_usine=provenance.ref_usine);
 
 --22
 SELECT nom_prod, poids, ref_prod FROM produit 
+WHERE poids IN (SELECT ref_prod FROM produit);
+
+SELECT nom_prod, poids, ref_prod FROM produit
 WHERE poids IN (SELECT ref_prod FROM produit);

@@ -3,7 +3,7 @@ ssh mukailaa@nivose.informatique.univ-paris-diderot.fr :
 
 psql -d base_cours mukailaa : 
 
-SET search_path TO projet_login; -> changer le mot de passe 
+SET search_path TO projet_login; -> changer l'emplacement de travail
 
 ALTER USER login WITH PASS WORD 'nouveauMotDePasse'; -> pour changer de mot de passe 
 
